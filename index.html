@@ -1,284 +1,539 @@
-
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>読谷村 土地開発行為 事前セルフチェック</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-.app{padding:1rem 0;font-family:var(--font-sans);width:100%}
-.hdr{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;padding-bottom:1.25rem;border-bottom:0.5px solid var(--color-border-tertiary)}
-.hdr-icon{width:48px;height:48px;border-radius:var(--border-radius-md);background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.hdr-icon i{font-size:24px;color:#0F6E56}
-.hdr-title{font-size:17px;font-weight:500;color:var(--color-text-primary);line-height:1.4}
-.hdr-sub{font-size:13px;color:var(--color-text-secondary);margin-top:3px;line-height:1.4}
-.prog-bar{display:flex;gap:5px;margin-bottom:1.25rem}
-.prog-seg{height:5px;flex:1;border-radius:3px;background:var(--color-border-tertiary);transition:background .3s}
-.prog-seg.done{background:#1D9E75}
-.prog-seg.cur{background:#378ADD}
-.prog-label{font-size:13px;color:var(--color-text-secondary);margin-bottom:.875rem;font-weight:500}
-.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:.875rem}
-.q-main{font-size:19px;font-weight:500;color:var(--color-text-primary);line-height:1.55;margin-bottom:1rem}
-.q-note{font-size:15px;color:var(--color-text-secondary);background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem;line-height:1.75;margin-bottom:1.25rem}
-.q-note strong{color:var(--color-text-primary);font-weight:500}
-.btn-col{display:flex;flex-direction:column;gap:10px}
-.btn{width:100%;padding:16px 20px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:17px;cursor:pointer;display:flex;align-items:center;gap:10px;text-align:left;line-height:1.3}
-.btn i{font-size:22px;flex-shrink:0}
-.btn:active{background:var(--color-background-secondary)}
-.btn.yes{border-color:#1D9E75;color:#085041}
-.btn.no{border-color:#D85A30;color:#712B13}
-.btn.yes:active{background:#E1F5EE}
-.btn.no:active{background:#FAECE7}
-.btn.pri{border-color:#378ADD;color:#0C447C}
-.btn.pri:active{background:#E6F1FB}
-.input-wrap{margin-bottom:1.25rem}
-.input-wrap label{display:block;font-size:16px;color:var(--color-text-secondary);margin-bottom:.5rem}
-.input-inner{display:flex;align-items:center;gap:10px}
-.input-inner input{flex:1;padding:14px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:20px}
-.input-inner .unit{font-size:18px;color:var(--color-text-secondary);font-weight:500}
-.notice{border-radius:var(--border-radius-md);padding:1rem 1.125rem;margin-bottom:1.125rem;font-size:16px;line-height:1.7}
-.notice.info{background:#E6F1FB;border:0.5px solid #85B7EB;color:#0C447C}
-.notice.success{background:#E1F5EE;border:0.5px solid #5DCAA5;color:#085041}
-.notice.warn{background:#FAEEDA;border:0.5px solid #EF9F27;color:#633806}
-.notice.neutral{background:#F1EFE8;border:0.5px solid #B4B2A9;color:#444441}
-.notice strong{font-weight:500;display:block;margin-bottom:4px;font-size:17px}
-.exempt-list{display:flex;flex-direction:column;gap:10px;margin-bottom:1.25rem}
-.ex-item{display:flex;align-items:flex-start;gap:14px;padding:1.125rem;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary)}
-.ex-item.ok{border-color:#5DCAA5;background:#E1F5EE}
-.ex-item.ng{border-color:#F09595;background:#FCEBEB}
-.ex-icon{width:48px;height:48px;border-radius:50%;border:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--color-background-secondary)}
-.ex-icon i{font-size:26px;color:var(--color-text-tertiary)}
-.ex-item.ok .ex-icon{background:#E1F5EE;border-color:#5DCAA5}
-.ex-item.ok .ex-icon i{color:#0F6E56}
-.ex-item.ng .ex-icon{background:#FCEBEB;border-color:#F09595}
-.ex-item.ng .ex-icon i{color:#A32D2D}
-.ex-body{flex:1;min-width:0}
-.ex-num{font-size:12px;color:var(--color-text-tertiary);margin-bottom:4px;font-weight:500;letter-spacing:.04em}
-.ex-text{font-size:16px;color:var(--color-text-primary);line-height:1.65;margin-bottom:12px}
-.ex-item.ok .ex-text{color:#085041}
-.ex-item.ng .ex-text{color:#791F1F}
-.ex-btns{display:flex;gap:8px}
-.ex-btn{flex:1;padding:11px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);font-size:15px;cursor:pointer;text-align:center}
-.ex-btn:active{background:var(--color-background-secondary)}
-.ex-btn.sel-yes{border-color:#1D9E75;background:#E1F5EE;color:#085041;font-weight:500}
-.ex-btn.sel-no{border-color:#E24B4A;background:#FCEBEB;color:#791F1F;font-weight:500}
-.result-card{border-radius:var(--border-radius-lg);padding:1.5rem;margin-bottom:.875rem}
-.result-card.exempt{background:#E1F5EE;border:0.5px solid #5DCAA5}
-.result-card.apply{background:#E6F1FB;border:0.5px solid #85B7EB}
-.result-card.na{background:#F1EFE8;border:0.5px solid #B4B2A9}
-.result-card.warn{background:#FAEEDA;border:0.5px solid #EF9F27}
-.res-icon{font-size:36px;margin-bottom:.625rem}
-.res-icon.exempt{color:#0F6E56}
-.res-icon.apply{color:#185FA5}
-.res-icon.na{color:#5F5E5A}
-.res-icon.warn{color:#854F0B}
-.res-title{font-size:20px;font-weight:500;margin-bottom:.625rem;line-height:1.4}
-.res-title.exempt{color:#085041}
-.res-title.apply{color:#0C447C}
-.res-title.na{color:#444441}
-.res-title.warn{color:#633806}
-.res-body{font-size:16px;line-height:1.75}
-.res-body.exempt{color:#085041}
-.res-body.apply{color:#0C447C}
-.res-body.na{color:#444441}
-.res-body.warn{color:#633806}
-.divider{border:none;border-top:0.5px solid var(--color-border-tertiary);margin:1.125rem 0}
-.contact-block{font-size:15px;color:var(--color-text-secondary);line-height:1.8}
-.contact-block strong{color:var(--color-text-primary);font-size:16px;font-weight:500;display:block;margin-bottom:4px}
-.footer-note{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.875rem 1rem;font-size:14px;color:var(--color-text-secondary);line-height:1.7;margin-bottom:.875rem}
-.reset-btn{background:none;border:none;color:var(--color-text-secondary);font-size:15px;cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:4px 0;display:block}
-.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green:    #1D9E75;
+    --green-lt: #E1F5EE;
+    --green-dk: #085041;
+    --green-bd: #5DCAA5;
+    --blue:     #185FA5;
+    --blue-lt:  #E6F1FB;
+    --blue-dk:  #0C447C;
+    --blue-bd:  #85B7EB;
+    --amber:    #854F0B;
+    --amber-lt: #FAEEDA;
+    --amber-bd: #EF9F27;
+    --amber-dk: #633806;
+    --gray:     #5F5E5A;
+    --gray-lt:  #F1EFE8;
+    --gray-bd:  #B4B2A9;
+    --gray-dk:  #444441;
+    --red-lt:   #FCEBEB;
+    --red-bd:   #F09595;
+    --red-dk:   #791F1F;
+    --red-mid:  #A32D2D;
+    --text:     #1a1a18;
+    --text-sub: #5F5E5A;
+    --text-muted: #888780;
+    --bg:       #ffffff;
+    --bg-sub:   #f7f6f3;
+    --border:   rgba(0,0,0,0.10);
+    --border-md: rgba(0,0,0,0.18);
+    --radius:   10px;
+    --radius-lg: 14px;
+  }
+
+  html, body {
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+    background: var(--bg-sub);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 0 0 60px;
+  }
+
+  /* ヘッダー */
+  .hdr {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 18px 20px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .hdr-icon {
+    width: 44px; height: 44px;
+    background: var(--green-lt);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .hdr-icon svg { width: 24px; height: 24px; color: var(--green); }
+  .hdr-title { font-size: 16px; font-weight: 700; line-height: 1.35; color: var(--text); }
+  .hdr-sub   { font-size: 12px; color: var(--text-sub); margin-top: 2px; }
+
+  /* プログレスバー */
+  .prog-wrap { padding: 16px 20px 0; }
+  .prog-bar  { display: flex; gap: 5px; margin-bottom: 8px; }
+  .prog-seg  { height: 5px; flex: 1; border-radius: 3px; background: var(--border); transition: background .3s; }
+  .prog-seg.done { background: var(--green); }
+  .prog-seg.cur  { background: #378ADD; }
+  .prog-lbl  { font-size: 13px; color: var(--text-sub); font-weight: 600; letter-spacing: .02em; }
+
+  /* コンテンツエリア */
+  .content { padding: 16px 20px 0; }
+
+  /* カード */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-bottom: 14px;
+  }
+
+  .q-main {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .q-note {
+    font-size: 15px;
+    color: var(--text-sub);
+    background: var(--bg-sub);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .q-note strong { color: var(--text); font-weight: 700; }
+
+  /* ボタン */
+  .btn-col { display: flex; flex-direction: column; gap: 10px; }
+  .btn {
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border-md);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    line-height: 1.3;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .15s, border-color .15s;
+  }
+  .btn svg { width: 22px; height: 22px; flex-shrink: 0; }
+  .btn:active { opacity: .75; }
+  .btn.yes { border-color: var(--green); color: var(--green-dk); }
+  .btn.yes:active { background: var(--green-lt); }
+  .btn.no  { border-color: #D85A30; color: #712B13; }
+  .btn.no:active { background: #FAECE7; }
+  .btn.pri { border-color: #378ADD; color: var(--blue-dk); }
+  .btn.pri:active { background: var(--blue-lt); }
+
+  /* 面積入力 */
+  .input-lbl {
+    display: block;
+    font-size: 16px;
+    color: var(--text-sub);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .input-row { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .input-row input {
+    flex: 1;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border-md);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 22px;
+    font-weight: 700;
+    font-family: inherit;
+    -webkit-appearance: none;
+  }
+  .input-row input:focus { outline: none; border-color: #378ADD; }
+  .unit { font-size: 20px; color: var(--text-sub); font-weight: 700; }
+
+  /* 通知ボックス */
+  .notice {
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .notice strong {
+    font-size: 17px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .notice.info   { background: var(--blue-lt); border: 1px solid var(--blue-bd); color: var(--blue-dk); }
+  .notice.warn   { background: var(--amber-lt); border: 1px solid var(--amber-bd); color: var(--amber-dk); }
+  .notice.success { background: var(--green-lt); border: 1px solid var(--green-bd); color: var(--green-dk); }
+  .notice.neutral { background: var(--gray-lt); border: 1px solid var(--gray-bd); color: var(--gray-dk); }
+
+  /* 適用除外リスト */
+  .exempt-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .ex-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    background: var(--bg);
+    transition: border-color .2s, background .2s;
+  }
+  .ex-item.ok { border-color: var(--green-bd); background: var(--green-lt); }
+  .ex-item.ng { border-color: var(--red-bd);   background: var(--red-lt); }
+
+  .ex-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-sub);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .ex-icon svg { width: 30px; height: 30px; color: var(--text-muted); }
+  .ex-item.ok .ex-icon { background: #fff; border-color: var(--green-bd); }
+  .ex-item.ok .ex-icon svg { color: var(--green); }
+  .ex-item.ng .ex-icon { background: #fff; border-color: var(--red-bd); }
+  .ex-item.ng .ex-icon svg { color: var(--red-mid); }
+
+  .ex-body { flex: 1; min-width: 0; }
+  .ex-num  { font-size: 12px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; letter-spacing: .05em; }
+  .ex-text { font-size: 16px; line-height: 1.65; margin-bottom: 12px; color: var(--text); }
+  .ex-item.ok .ex-text { color: var(--green-dk); }
+  .ex-item.ng .ex-text { color: var(--red-dk); }
+
+  .ex-btns { display: flex; gap: 8px; }
+  .ex-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border-md);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .15s;
+  }
+  .ex-btn:active { opacity: .7; }
+  .ex-btn.sel-yes { border-color: var(--green); background: var(--green-lt); color: var(--green-dk); }
+  .ex-btn.sel-no  { border-color: #E24B4A;       background: var(--red-lt);   color: var(--red-dk); }
+
+  /* 結果 */
+  .result-card {
+    border-radius: var(--radius-lg);
+    padding: 24px 20px;
+    margin-bottom: 14px;
+  }
+  .result-card.exempt { background: var(--green-lt); border: 1px solid var(--green-bd); }
+  .result-card.apply  { background: var(--blue-lt);  border: 1px solid var(--blue-bd); }
+  .result-card.na     { background: var(--gray-lt);  border: 1px solid var(--gray-bd); }
+  .result-card.warn   { background: var(--amber-lt); border: 1px solid var(--amber-bd);}
+
+  .res-icon { margin-bottom: 10px; }
+  .res-icon svg { width: 40px; height: 40px; }
+  .result-card.exempt .res-icon svg { color: var(--green); }
+  .result-card.apply  .res-icon svg { color: var(--blue); }
+  .result-card.na     .res-icon svg { color: var(--gray); }
+  .result-card.warn   .res-icon svg { color: var(--amber); }
+
+  .res-title { font-size: 21px; font-weight: 700; margin-bottom: 8px; line-height: 1.4; }
+  .result-card.exempt .res-title { color: var(--green-dk); }
+  .result-card.apply  .res-title { color: var(--blue-dk); }
+  .result-card.na     .res-title { color: var(--gray-dk); }
+  .result-card.warn   .res-title { color: var(--amber-dk); }
+
+  .res-body { font-size: 16px; line-height: 1.75; }
+  .result-card.exempt .res-body { color: var(--green-dk); }
+  .result-card.apply  .res-body { color: var(--blue-dk); }
+  .result-card.na     .res-body { color: var(--gray-dk); }
+  .result-card.warn   .res-body { color: var(--amber-dk); }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+  .contact-block { font-size: 15px; line-height: 1.8; color: var(--text-sub); }
+  .contact-block strong { color: var(--text); font-size: 17px; font-weight: 700; display: block; margin-bottom: 4px; }
+
+  .footer-note {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-size: 14px;
+    color: var(--text-sub);
+    line-height: 1.7;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .footer-note svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; color: var(--text-muted); }
+
+  .reset-btn {
+    background: none;
+    border: none;
+    color: var(--text-sub);
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 4px 0;
+    display: block;
+  }
+
+  /* SVGアイコン helper */
+  .ico { display: inline-block; vertical-align: middle; }
 </style>
-<h2 class="sr-only">読谷村土地開発行為 事前セルフチェックツール</h2>
-<div class="app">
+</head>
+<body>
+<div class="page">
   <div class="hdr">
-    <div class="hdr-icon"><i class="ti ti-map-2" aria-hidden="true"></i></div>
+    <div class="hdr-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+    </div>
     <div>
       <div class="hdr-title">読谷村 土地開発行為<br>事前セルフチェック</div>
       <div class="hdr-sub">窓口受付の前に自己確認できます</div>
     </div>
   </div>
-  <div id="prog" class="prog-bar"></div>
-  <div id="main"></div>
+
+  <div class="prog-wrap">
+    <div class="prog-bar" id="prog"></div>
+    <div class="prog-lbl" id="prog-lbl"></div>
+  </div>
+
+  <div class="content" id="main"></div>
 </div>
+
 <script>
-const S={step:0,area:null,exempt:{},resultKey:null};
-const EXEMPT=[
-  {id:'e1',text:'宅地分譲・分譲住宅・共同住宅で、開発区域周辺の道路・排水・水道の基盤整備が完了している'},
-  {id:'e2',text:'開発区域周辺の土地利用との整合性がとれている'},
-  {id:'e3',text:'予定建築物の高さが、都市計画法・地区計画・景観計画等の基準以下である'},
-  {id:'e4',text:'予定建築物の規模・配置が周辺建物と過密・狭隘になっていない'},
-  {id:'e5',text:'予定建築物の壁が隣地境界線から1m以上後退している'},
-  {id:'e6',text:'宅地分譲・分譲住宅の各画地規模が1区画150㎡以上（共同住宅は適用外）'},
-  {id:'e7',text:'駐車場：宅地分譲・分譲住宅は画地内2台以上、共同住宅等は戸数分以上を設置'},
-  {id:'e8',text:'開発区域の各画地を10%以上緑化し、沿道・敷地内緑化に配慮している'},
-  {id:'e9',text:'区画変更が3区画以下で公共施設整備を伴わない。崖地でなく切土・盛土が宅地造成規制法の技術基準を満たす。他法令の手続で実施できる'}
+const S = { step: 0, area: null, exempt: {}, resultKey: null };
+
+const EXEMPT = [
+  { id:'e1', text:'宅地分譲・分譲住宅・共同住宅で、開発区域周辺の道路・排水・水道の基盤整備が完了している' },
+  { id:'e2', text:'開発区域周辺の土地利用との整合性がとれている' },
+  { id:'e3', text:'予定建築物の高さが、都市計画法・地区計画・景観計画等の基準以下である' },
+  { id:'e4', text:'予定建築物の規模・配置が周辺建物と過密・狭隘になっていない' },
+  { id:'e5', text:'予定建築物の壁が隣地境界線から1m以上後退している' },
+  { id:'e6', text:'宅地分譲・分譲住宅の各画地規模が1区画150㎡以上（共同住宅は適用外）' },
+  { id:'e7', text:'駐車場：宅地分譲・分譲住宅は画地内2台以上、共同住宅等は戸数分以上を設置' },
+  { id:'e8', text:'開発区域の各画地を10%以上緑化し、沿道・敷地内緑化に配慮している' },
+  { id:'e9', text:'区画変更が3区画以下で公共施設整備を伴わない。崖地でなく切土・盛土が宅地造成規制法の技術基準を満たす。他法令の手続で実施できる' }
 ];
-const RESULTS={
-  na1:{cls:'na',icon:'ti-circle-x',title:'開発行為に該当しません',body:'土地の区画・形・質の変更を行わない場合は、本条例の開発行為には当たりません。建築確認・農地転用など他法令の手続が必要な場合があります。'},
-  na2:{cls:'na',icon:'ti-circle-x',title:'本条例の対象外です',body:'500㎡未満で土砂採取500㎥以下かつ高低差1m未満の場合、条例(2)号の要件を満たさず開発許可は不要です。念のため都市計画課窓口にご相談ください。'},
-  over3000:{cls:'na',icon:'ti-arrow-right',title:'都市計画法等の手続を確認ください',body:'3,000㎡以上の開発行為は本条例の対象外です。都市計画法（沖縄県）など他法令の手続が必要な場合があります。関係各課にご確認ください。'},
-  exempt:{cls:'exempt',icon:'ti-circle-check',title:'適用除外の可能性があります',body:'全基準に該当する場合、本申請は不要です。「開発適用除外確認届出書（第12号様式）」を準備のうえ、都市計画課窓口へお越しください。最終判断は村長（都市計画課）が行います。'},
-  apply:{cls:'apply',icon:'ti-file-description',title:'開発許可の本申請が必要です',body:'適用除外の基準を満たさない項目があるため、本申請が必要です。事前調整用資料・チェックシートを準備のうえ、都市計画課窓口にてご相談ください。'},
-  apply_direct:{cls:'apply',icon:'ti-file-description',title:'開発許可の本申請が必要です',body:'開発行為として本申請が必要です。事前調整用の資料作成要領・チェックシートを準備のうえ、都市計画課窓口にてご相談ください。'}
+
+const RESULTS = {
+  na1:         { cls:'na',     iconId:'x',     title:'開発行為に該当しません',           body:'土地の区画・形・質の変更を行わない場合は、本条例の開発行為には当たりません。建築確認・農地転用など他法令の手続が必要な場合があります。' },
+  na2:         { cls:'na',     iconId:'x',     title:'本条例の対象外です',               body:'500㎡未満で土砂採取500㎥以下かつ高低差1m未満の場合、条例(2)号の要件を満たさず開発許可は不要です。念のため都市計画課窓口にご相談ください。' },
+  over3000:    { cls:'na',     iconId:'arrow', title:'都市計画法等の手続を確認ください', body:'3,000㎡以上の開発行為は本条例の対象外です。都市計画法（沖縄県）など他法令の手続が必要な場合があります。関係各課にご確認ください。' },
+  exempt:      { cls:'exempt', iconId:'check', title:'適用除外の可能性があります',       body:'全基準に該当する場合、本申請は不要です。「開発適用除外確認届出書（第12号様式）」を準備のうえ、都市計画課窓口へお越しください。最終判断は村長（都市計画課）が行います。' },
+  apply:       { cls:'apply',  iconId:'file',  title:'開発許可の本申請が必要です',       body:'適用除外の基準を満たさない項目があるため、本申請が必要です。事前調整用資料・チェックシートを準備のうえ、都市計画課窓口にてご相談ください。' },
+  apply_direct:{ cls:'apply',  iconId:'file',  title:'開発許可の本申請が必要です',       body:'開発行為として本申請が必要です。事前調整用の資料作成要領・チェックシートを準備のうえ、都市計画課窓口にてご相談ください。' }
 };
 
-function dots(){
-  let h='';
-  for(let i=0;i<5;i++){
-    let c='prog-seg';
-    if(i<S.step)c+=' done';
-    else if(i===S.step)c+=' cur';
-    h+=`<div class="${c}"></div>`;
+const ICONS = {
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  x:     `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  arrow: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 9l3 3m0 0l-3 3m3-3H8m13 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  file:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`,
+  circle:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/></svg>`,
+  ckFull:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  xFull: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+  btnOk: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>`,
+  btnNg: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+  next:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><polyline points="9 18 15 12 9 6"/></svg>`,
+  info:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
+};
+
+function dots() {
+  const total = 5;
+  let h = '';
+  const labels = ['開発行為の有無','面積入力','条号の判定','適用除外の確認','結果'];
+  for (let i = 0; i < total; i++) {
+    let c = 'prog-seg';
+    if (i < S.step) c += ' done';
+    else if (i === S.step) c += ' cur';
+    h += `<div class="${c}"></div>`;
   }
-  document.getElementById('prog').innerHTML=h;
+  document.getElementById('prog').innerHTML = h;
+  const idx = Math.min(S.step, 4);
+  document.getElementById('prog-lbl').textContent = `ステップ ${idx+1} / 5 — ${labels[idx]}`;
 }
 
-function render(){
+function render() {
   dots();
-  const m=document.getElementById('main');
-  if(S.step===0)r0(m);
-  else if(S.step===1)r1(m);
-  else if(S.step===2)r2(m);
-  else if(S.step===3)r3(m);
+  const m = document.getElementById('main');
+  if (S.step === 0) r0(m);
+  else if (S.step === 1) r1(m);
+  else if (S.step === 2) r2(m);
+  else if (S.step === 3) r3(m);
   else r4(m);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function r0(m){
-  m.innerHTML=`
-  <div class="prog-label">ステップ 1 / 5 ー 開発行為の有無</div>
+function r0(m) {
+  m.innerHTML = `
   <div class="card">
     <div class="q-main">土地の区画・形・質の変更を行いますか？</div>
-    <div class="q-note">以下のいずれかに該当する場合は「はい」を選択してください。<br><br>
+    <div class="q-note">
+      以下のいずれかに該当する場合は「はい」を選択してください。<br><br>
       <strong>区画の変更</strong>：土地の分割・合筆など<br>
       <strong>形の変更</strong>：切土・盛土による形状変更<br>
       <strong>質の変更</strong>：農地等を宅地・他用途に転換<br><br>
       ※分筆のみで利用形態に変更なければ非該当
     </div>
     <div class="btn-col">
-      <button class="btn yes" onclick="S.step=1;render()"><i class="ti ti-check" aria-hidden="true"></i>はい（変更あり）</button>
-      <button class="btn no" onclick="showResult('na1')"><i class="ti ti-x" aria-hidden="true"></i>いいえ（変更なし）</button>
+      <button class="btn yes" onclick="S.step=1;render()">${ICONS.btnOk} はい（変更あり）</button>
+      <button class="btn no" onclick="showResult('na1')">${ICONS.btnNg} いいえ（変更なし）</button>
     </div>
   </div>`;
 }
 
-function r1(m){
-  m.innerHTML=`
-  <div class="prog-label">ステップ 2 / 5 ー 土地の面積</div>
+function r1(m) {
+  m.innerHTML = `
   <div class="card">
     <div class="q-main">「一団の土地」の合計面積を入力してください</div>
     <div class="q-note">一団の土地とは：登記上の筆数を問わず、土地利用上一体として扱われるひとまとまりの土地です。</div>
-    <div class="input-wrap">
-      <label for="ai">面積</label>
-      <div class="input-inner">
-        <input type="number" id="ai" min="1" step="1" inputmode="numeric">
-        <span class="unit">㎡</span>
-      </div>
+    <label class="input-lbl" for="ai">面積</label>
+    <div class="input-row">
+      <input type="number" id="ai" min="1" step="1" inputmode="decimal" placeholder="0">
+      <span class="unit">㎡</span>
     </div>
     <div class="btn-col">
-      <button class="btn pri" onclick="go1()"><i class="ti ti-arrow-right" aria-hidden="true"></i>次へ</button>
+      <button class="btn pri" onclick="go1()">${ICONS.next} 次へ</button>
     </div>
   </div>
   <button class="reset-btn" onclick="reset()">最初からやり直す</button>`;
+  setTimeout(() => { const el = document.getElementById('ai'); if(el) el.focus(); }, 100);
 }
 
-function go1(){
-  const v=parseFloat(document.getElementById('ai').value);
-  if(isNaN(v)||v<=0){alert('正の数値を入力してください');return;}
-  S.area=v;S.step=2;render();
+function go1() {
+  const v = parseFloat(document.getElementById('ai').value);
+  if (isNaN(v) || v <= 0) { alert('正の数値を入力してください'); return; }
+  S.area = v; S.step = 2; render();
 }
 
-function r2(m){
-  const a=S.area;
-  let notice='',btns='';
-  if(a>=500&&a<3000){
-    notice=`<div class="notice info"><strong>条例(1)号に該当</strong>500㎡以上3,000㎡未満の一団の土地の開発行為です。引き続き適用除外の基準を確認します。</div>`;
-    btns=`<div class="btn-col">
-      <button class="btn pri" onclick="S.step=3;render()"><i class="ti ti-clipboard-check" aria-hidden="true"></i>適用除外の基準を確認する</button>
-      <button class="btn" onclick="showResult('apply_direct')"><i class="ti ti-file-description" aria-hidden="true"></i>本申請へ（除外確認は不要）</button>
+function r2(m) {
+  const a = S.area;
+  let notice = '', btns = '';
+  if (a >= 500 && a < 3000) {
+    notice = `<div class="notice info"><strong>条例(1)号に該当します</strong>500㎡以上3,000㎡未満の一団の土地の開発行為です。引き続き適用除外の基準を確認します。</div>`;
+    btns = `<div class="btn-col">
+      <button class="btn pri" onclick="S.step=3;render()">${ICONS.next} 適用除外の基準を確認する</button>
+      <button class="btn" onclick="showResult('apply_direct')">${ICONS.file} 本申請へ（除外確認は不要）</button>
     </div>`;
-  }else if(a<500){
-    notice=`<div class="notice warn"><strong>面積500㎡未満 ー 追加条件を確認します（条例(2)号）</strong>以下のいずれかに該当しますか？<br><br>
-    ① 土砂等の採取量が500㎥を超える<br>
-    ② 周囲隣接地との高低差が1m以上生じる</div>`;
-    btns=`<div class="btn-col">
-      <button class="btn yes" onclick="S.step=3;render()"><i class="ti ti-check" aria-hidden="true"></i>いずれかに該当する</button>
-      <button class="btn no" onclick="showResult('na2')"><i class="ti ti-x" aria-hidden="true"></i>どちらも該当しない</button>
+  } else if (a < 500) {
+    notice = `<div class="notice warn"><strong>面積500㎡未満 — 追加条件を確認します（条例(2)号）</strong>以下のいずれかに該当しますか？<br><br>① 土砂等の採取量が500㎥を超える<br>② 周囲隣接地との高低差が1m以上生じる</div>`;
+    btns = `<div class="btn-col">
+      <button class="btn yes" onclick="S.step=3;render()">${ICONS.btnOk} いずれかに該当する</button>
+      <button class="btn no" onclick="showResult('na2')">${ICONS.btnNg} どちらも該当しない</button>
     </div>`;
-  }else{
-    notice=`<div class="notice neutral"><strong>面積3,000㎡以上 ー 本条例の対象外です</strong>都市計画法（沖縄県）など他法令の手続をご確認ください。</div>`;
-    btns=`<div class="btn-col"><button class="btn" onclick="showResult('over3000')"><i class="ti ti-arrow-right" aria-hidden="true"></i>確認する</button></div>`;
+  } else {
+    notice = `<div class="notice neutral"><strong>面積3,000㎡以上 — 本条例の対象外です</strong>都市計画法（沖縄県）など他法令の手続をご確認ください。</div>`;
+    btns = `<div class="btn-col"><button class="btn" onclick="showResult('over3000')">${ICONS.next} 確認する</button></div>`;
   }
-  m.innerHTML=`
-  <div class="prog-label">ステップ 3 / 5 ー 条号の判定（面積：${a.toLocaleString()} ㎡）</div>
+  m.innerHTML = `
   <div class="card">${notice}${btns}</div>
   <button class="reset-btn" onclick="reset()">最初からやり直す</button>`;
 }
 
-function r3(m){
-  const checks=S.exempt;
-  const allYes=EXEMPT.every(it=>checks[it.id]===true);
-  const anyNo=EXEMPT.some(it=>checks[it.id]===false);
-  const allAnswered=EXEMPT.every(it=>checks[it.id]!==undefined);
-  let items='';
-  EXEMPT.forEach((it,i)=>{
-    const v=checks[it.id];
-    const cls=v===true?'ok':v===false?'ng':'';
-    const icon=v===true?'ti-circle-check':v===false?'ti-circle-x':'ti-circle';
-    items+=`<div class="ex-item ${cls}">
-      <div class="ex-icon"><i class="ti ${icon}" aria-hidden="true"></i></div>
+function r3(m) {
+  const checks = S.exempt;
+  const allYes = EXEMPT.every(it => checks[it.id] === true);
+  const anyNo  = EXEMPT.some(it => checks[it.id] === false);
+  const allDone = EXEMPT.every(it => checks[it.id] !== undefined);
+
+  let items = '';
+  EXEMPT.forEach((it, i) => {
+    const v = checks[it.id];
+    const cls  = v === true ? 'ok' : v === false ? 'ng' : '';
+    const icon = v === true ? ICONS.ckFull : v === false ? ICONS.xFull : ICONS.circle;
+    items += `<div class="ex-item ${cls}">
+      <div class="ex-icon">${icon}</div>
       <div class="ex-body">
         <div class="ex-num">項目 ${i+1}</div>
         <div class="ex-text">${it.text}</div>
         <div class="ex-btns">
-          <button class="ex-btn ${v===true?'sel-yes':''}" onclick="setEx('${it.id}',true)"><i class="ti ti-check" aria-hidden="true" style="font-size:14px"></i> 該当する</button>
-          <button class="ex-btn ${v===false?'sel-no':''}" onclick="setEx('${it.id}',false)"><i class="ti ti-x" aria-hidden="true" style="font-size:14px"></i> 該当しない</button>
+          <button class="ex-btn ${v===true?'sel-yes':''}" onclick="setEx('${it.id}',true)">${ICONS.btnOk} 該当する</button>
+          <button class="ex-btn ${v===false?'sel-no':''}" onclick="setEx('${it.id}',false)">${ICONS.btnNg} 該当しない</button>
         </div>
       </div>
     </div>`;
   });
-  let bottom='';
-  if(allYes){
-    bottom=`<div class="notice success"><strong>全9項目に該当</strong>適用除外の可能性があります。</div>
-    <div class="btn-col"><button class="btn yes" onclick="showResult('exempt')"><i class="ti ti-arrow-right" aria-hidden="true"></i>結果を見る</button></div>`;
-  }else if(anyNo){
-    bottom=`<div class="notice warn"><strong>非該当の項目があります</strong>本申請が必要です。</div>
-    <div class="btn-col"><button class="btn pri" onclick="showResult('apply')"><i class="ti ti-arrow-right" aria-hidden="true"></i>結果を見る</button></div>`;
-  }else if(allAnswered){
-    bottom=`<div class="btn-col"><button class="btn pri" onclick="showResult('exempt')"><i class="ti ti-arrow-right" aria-hidden="true"></i>結果を見る</button></div>`;
+
+  let bottom = '';
+  if (allYes) {
+    bottom = `<div class="notice success"><strong>全9項目に該当しました</strong>適用除外の可能性があります。</div>
+    <div class="btn-col"><button class="btn yes" onclick="showResult('exempt')">${ICONS.next} 結果を見る</button></div>`;
+  } else if (anyNo) {
+    bottom = `<div class="notice warn"><strong>非該当の項目があります</strong>本申請が必要です。</div>
+    <div class="btn-col"><button class="btn pri" onclick="showResult('apply')">${ICONS.next} 結果を見る</button></div>`;
+  } else if (allDone) {
+    bottom = `<div class="btn-col"><button class="btn pri" onclick="showResult('exempt')">${ICONS.next} 結果を見る</button></div>`;
   }
-  m.innerHTML=`
-  <div class="prog-label">ステップ 4 / 5 ー 開発適用除外の基準（全9項目）</div>
+
+  m.innerHTML = `
   <div class="card">
-    <div class="q-main" style="font-size:17px;margin-bottom:1rem">全項目に該当する場合、開発許可の適用除外となります</div>
+    <div class="q-main" style="font-size:18px;margin-bottom:14px">全項目に該当する場合、開発許可の適用除外となります</div>
     <div class="exempt-list">${items}</div>
     ${bottom}
   </div>
   <button class="reset-btn" onclick="reset()">最初からやり直す</button>`;
 }
 
-function setEx(id,v){S.exempt[id]=v;r3(document.getElementById('main'));}
+function setEx(id, v) { S.exempt[id] = v; r3(document.getElementById('main')); }
 
-function showResult(key){S.resultKey=key;S.step=4;render();}
+function showResult(key) { S.resultKey = key; S.step = 4; render(); }
 
-function r4(m){
-  const r=RESULTS[S.resultKey]||RESULTS['na1'];
-  const checks=S.exempt;
-  let summary='';
-  if(S.resultKey==='exempt'||S.resultKey==='apply'){
-    const items=EXEMPT.map((it,i)=>{
-      const v=checks[it.id];
-      const cls=v===true?'ok':v===false?'ng':'';
-      const icon=v===true?'ti-circle-check':v===false?'ti-circle-x':'ti-circle';
-      const label=v===true?'該当':'非該当';
-      return `<div class="ex-item ${cls}" style="padding:.875rem 1rem">
-        <div class="ex-icon"><i class="ti ${icon}" aria-hidden="true"></i></div>
+function r4(m) {
+  const r = RESULTS[S.resultKey] || RESULTS['na1'];
+  const checks = S.exempt;
+
+  let summary = '';
+  if (S.resultKey === 'exempt' || S.resultKey === 'apply') {
+    const items = EXEMPT.map((it, i) => {
+      const v = checks[it.id];
+      const cls  = v === true ? 'ok' : v === false ? 'ng' : '';
+      const icon = v === true ? ICONS.ckFull : v === false ? ICONS.xFull : ICONS.circle;
+      const label = v === true ? '該当' : '非該当';
+      return `<div class="ex-item ${cls}" style="padding:14px">
+        <div class="ex-icon">${icon}</div>
         <div class="ex-body">
           <div class="ex-num">項目 ${i+1}</div>
           <div class="ex-text" style="font-size:15px;margin-bottom:0">${it.text} — <strong>${label}</strong></div>
         </div>
       </div>`;
     }).join('');
-    summary=`<div class="divider"></div><p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:.75rem;font-weight:500">適用除外チェック結果</p><div class="exempt-list" style="gap:8px">${items}</div>`;
+    summary = `<hr class="divider"><p style="font-size:13px;color:var(--text-muted);margin-bottom:10px;font-weight:700">適用除外チェック結果</p><div class="exempt-list" style="gap:8px">${items}</div>`;
   }
-  let contact='';
-  if(r.cls!=='na'||S.resultKey==='over3000'){
-    contact=`<div class="divider"></div>
+
+  let contact = '';
+  if (r.cls !== 'na' || S.resultKey === 'over3000') {
+    contact = `<hr class="divider">
     <div class="contact-block">
       <strong>読谷村役場 都市計画課</strong>
       〒904-0392 沖縄県中頭郡読谷村字座喜味2901番地1<br>
@@ -286,21 +541,24 @@ function r4(m){
       受付：平日 8:30〜12:00 / 13:00〜17:15
     </div>`;
   }
-  m.innerHTML=`
-  <div class="prog-label">ステップ 5 / 5 ー 結果</div>
+
+  m.innerHTML = `
   <div class="result-card ${r.cls}">
-    <div class="res-icon ${r.cls}"><i class="ti ${r.icon}" aria-hidden="true"></i></div>
-    <div class="res-title ${r.cls}">${r.title}</div>
-    <div class="res-body ${r.cls}">${r.body}</div>
+    <div class="res-icon">${ICONS[r.iconId]}</div>
+    <div class="res-title">${r.title}</div>
+    <div class="res-body">${r.body}</div>
     ${summary}${contact}
   </div>
   <div class="footer-note">
-    <i class="ti ti-info-circle" aria-hidden="true" style="font-size:16px;vertical-align:-2px;margin-right:4px"></i>
-    このチェック結果は参考情報です。最終的な判断は読谷村都市計画課が行います。鉱物採掘（条例第(3)号）・特殊事例は窓口へ直接ご相談ください。令和7年4月1日施行の改正規則に基づいています。
+    ${ICONS.info}
+    <span>このチェック結果は参考情報です。最終的な判断は読谷村都市計画課が行います。鉱物採掘（条例第(3)号）・特殊事例は窓口へ直接ご相談ください。令和7年4月1日施行の改正規則に基づいています。</span>
   </div>
   <button class="reset-btn" onclick="reset()">最初からやり直す</button>`;
 }
 
-function reset(){S.step=0;S.area=null;S.exempt={};S.resultKey=null;render();}
+function reset() { S.step = 0; S.area = null; S.exempt = {}; S.resultKey = null; render(); }
+
 render();
 </script>
+</body>
+</html>
